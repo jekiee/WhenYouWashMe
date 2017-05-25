@@ -10,8 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.3"
+        android:gravity="center|left"
+        android:paddingLeft="25dp"
         android:textSize="18sp"
-        tools:text="Fri. \n 21.04" />
+        tools:text="Fri. \n21.04" />
 
     <ImageView
         android:id="@+id/weatherImg"
@@ -25,7 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.3"
+        android:gravity="center|right"
+        android:paddingRight="5dp"
         android:textSize="18sp"
-        tools:text="Sunny \n +5" />
+        tools:text="Sunny \n+55°C"
+        />
 
 </LinearLayout>
