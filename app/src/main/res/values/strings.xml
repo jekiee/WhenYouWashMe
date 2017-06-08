@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WhenYouWashMe</string>
+    <string name="signUp">signUp</string>
+    <string name="login">login</string>
 </resources>
