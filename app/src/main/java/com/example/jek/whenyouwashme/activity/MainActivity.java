@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
             //Log.d(TAG, "switch to else");
             setContentView(R.layout.activity_main);
         }
+
     }
 
     @Override
