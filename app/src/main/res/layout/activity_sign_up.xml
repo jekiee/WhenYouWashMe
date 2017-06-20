@@ -6,28 +6,21 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.example.jek.whenyouwashme.activity.SignUpACtivity">
+    tools:context="com.example.jek.whenyouwashme.activity.SignUpActivity">
 
     <EditText
-        android:id="@+id/login"
+        android:id="@+id/login_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/password_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
     <Button
-        android:id="@+id/signUpButton"
-        android:text="@string/signUp"
+        android:id="@+id/signUp_btn"
+        android:text="Enter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:text="@string/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
