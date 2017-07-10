@@ -1,4 +1,4 @@
-package com.example.jek.whenyouwashme.activity;
+package com.example.jek.whenyouwashme.model.sqlite;
 
 import android.content.Context;
 import android.database.DatabaseErrorHandler;

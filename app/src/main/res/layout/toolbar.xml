@@ -12,6 +12,16 @@
         android:id="@+id/avatar"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="20dp"
+        android:background="@color/colorPrimaryDark"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_launcher" />
 
+    <!--<Button
+        android:id="@+id/btnSetImg"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:text="set img"
+        android:textSize="22sp" />-->
 </android.support.v7.widget.Toolbar>

@@ -8,6 +8,10 @@
     android:orientation="vertical"
     tools:context="com.example.jek.whenyouwashme.activity.SignUpActivity">
 
+    <include
+        android:id="@+id/includeToolbar"
+        layout="@layout/toolbar" />
+
     <EditText
         android:id="@+id/login_et"
         android:layout_width="match_parent"

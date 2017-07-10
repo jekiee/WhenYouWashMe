@@ -1,9 +1,11 @@
-package com.example.jek.whenyouwashme.activity;
+package com.example.jek.whenyouwashme.model.sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.jek.whenyouwashme.model.firebase.Message;
 
 import java.util.ArrayList;
 import java.util.List;

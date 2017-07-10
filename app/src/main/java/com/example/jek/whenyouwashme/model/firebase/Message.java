@@ -1,10 +1,10 @@
-package com.example.jek.whenyouwashme.activity;
+package com.example.jek.whenyouwashme.model.firebase;
 
 /**
  * Created by jek on 13.06.2017.
  */
 
-public class Message {
+public class Message extends Thread{
     private String time;
     private String message;
     private String title;

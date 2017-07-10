@@ -1,4 +1,4 @@
-package com.example.jek.whenyouwashme.activity;
+package com.example.jek.whenyouwashme.model.firebase;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.example.jek.whenyouwashme.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
