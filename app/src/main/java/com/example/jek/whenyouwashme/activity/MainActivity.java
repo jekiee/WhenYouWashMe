@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.example.jek.whenyouwashme.R;
 
-
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -28,6 +27,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //startActivity(new Intent(this, FirebaseActivity.class));
-        startActivity(new Intent(this, MapsActivity.class));
+        startActivity(new Intent(this, CameraActivity.class));
     }
 }

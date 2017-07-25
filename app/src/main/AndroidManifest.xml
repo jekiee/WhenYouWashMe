@@ -2,12 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jek.whenyouwashme">
 
+    <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+
+        />
 
     <application
+
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,13 +32,24 @@
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.FirebaseActivity" />
         <activity android:name=".activity.MapsActivity" />
+        <activity android:name=".activity.CameraActivity" />
 
         <service android:name=".services.LocationService" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.jek.whenyouwashme"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDAnnZpnibdveHghw0KtROBZjyfY1s7xjU" />
-
     </application>
+
 
 </manifest>

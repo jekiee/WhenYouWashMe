@@ -1,13 +1,10 @@
 package com.example.jek.whenyouwashme.services;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -18,9 +15,14 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.Places;
 
 /**
  * Created by jek on 04.07.2017.
@@ -33,7 +35,7 @@ public class LocationService extends Service implements
     public Location currentLocation;
     private GoogleApiClient mGoogleApiClient;
     private IBinder binder = new MapBinder();
-    public static final String ACTION_LOCATION = "com.example.jek.whenyouwashme.services.action.location";
+    public static final String ACTION_LOCATION = "action location";
 
     @Nullable
     @Override
@@ -58,14 +60,23 @@ public class LocationService extends Service implements
     public void onCreate() {
         super.onCreate();
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
-        mGoogleApiClient = builder.addConnectionCallbacks(this).addConnectionCallbacks(this).addApi(LocationServices.API).build();
+        mGoogleApiClient = builder.
+                addConnectionCallbacks(this).
+                addConnectionCallbacks(this).
+                addApi(LocationServices.API).
+                addApi(Places.GEO_DATA_API).
+                addApi(Places.PLACE_DETECTION_API).
+                //enableAutoManage(this, this).
+                build();
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "Location service connected");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -81,6 +92,19 @@ public class LocationService extends Service implements
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
 
+        PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                .getCurrentPlace(mGoogleApiClient, null);
+        result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+            @Override
+            public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                    Log.i(TAG, String.format("Place '%s' has likelihood: %g",
+                            placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getLikelihood()));
+                }
+                likelyPlaces.release();
+            }
+        });
     }
 
     @Override

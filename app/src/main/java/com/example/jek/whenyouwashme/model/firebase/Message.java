@@ -50,7 +50,6 @@ public class Message extends Thread{
         Message message = (Message) o;
 
         return id == message.id;
-
     }
 
     @Override

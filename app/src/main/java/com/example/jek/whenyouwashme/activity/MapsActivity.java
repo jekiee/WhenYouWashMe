@@ -34,16 +34,18 @@ public class MapsActivity extends AppCompatActivity
     private static final String TAG = MapsActivity.class.getSimpleName();
     private static final int REQUEST_MAPS_PERMISSIONS_ON_START = 5005;
     private static final int REQUEST_MAPS_PERMISSIONS_ON_MAP_SETUP = 5006;
+    private String url;
     private long serviceBindTime = System.currentTimeMillis();
     private GoogleMap googleMap;
     private LocationService service;
     private MyBroadcastReceiver myBroadcastReceiver;
+    private int PROXIMITY_RADIUS = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+                ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermissions(REQUEST_MAPS_PERMISSIONS_ON_START);
         } else {
@@ -176,6 +178,17 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+        StringBuilder googlePlacesUrl = new
+                StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + latitude + "," + longitude);
+        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlacesUrl.append("&type=" + nearbyPlace);
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
+        return (googlePlacesUrl.toString());
+    }
+
     private class MyBroadcastReceiver extends BroadcastReceiver {
         Location location;
         LatLng myPosition;
@@ -185,12 +198,17 @@ public class MapsActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             location = MapsActivity.this.service.currentLocation;
-            myPosition = new LatLng(location.getLatitude(), location.getLongitude());
+            myPosition = new LatLng(location.getLatitude(),
+                    location.getLongitude());
             Log.d(TAG, myPosition.toString());
             center = CameraUpdateFactory.newLatLng(myPosition);
             zoom = CameraUpdateFactory.zoomTo(15);
             googleMap.moveCamera(center);
             googleMap.animateCamera(zoom);
+
+            //url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + myPosition + "radius=500&type=car_wash&key=AIzaSyDAnnZpnibdveHghw0KtROBZjyfY1s7xjU";
         }
     }
+
+
 }

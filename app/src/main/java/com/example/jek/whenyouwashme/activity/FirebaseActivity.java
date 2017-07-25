@@ -184,8 +184,12 @@ public class FirebaseActivity extends AppCompatActivity implements ChildEventLis
     @Override
     protected void onStop() {
         super.onStop();
-        userDataBaseReference.removeEventListener(this);
-        messageDataSource.close();
+        if (userDataBaseReference != null) {
+            userDataBaseReference.removeEventListener(this);
+        }
+        if (messageDataSource != null) {
+            messageDataSource.close();
+        }
     }
 
     public String getUserName() {
