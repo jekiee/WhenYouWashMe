@@ -27,6 +27,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //startActivity(new Intent(this, FirebaseActivity.class));
-        startActivity(new Intent(this, CameraActivity.class));
+        startActivity(new Intent(this, MapsActivity.class));
     }
 }

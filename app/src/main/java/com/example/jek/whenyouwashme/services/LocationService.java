@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -67,9 +68,10 @@ public class LocationService extends Service implements
                 addApi(Places.GEO_DATA_API).
                 addApi(Places.PLACE_DETECTION_API).
                 //enableAutoManage(this, this).
-                build();
+                        build();
         mGoogleApiClient.connect();
     }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

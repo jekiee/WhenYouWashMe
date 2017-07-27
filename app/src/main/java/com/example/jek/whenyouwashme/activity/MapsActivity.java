@@ -19,9 +19,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
+import com.example.jek.whenyouwashme.model.googleMaps.GetNearbyPlacesData;
 import com.example.jek.whenyouwashme.services.LocationService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,18 +38,25 @@ public class MapsActivity extends AppCompatActivity
     private static final String TAG = MapsActivity.class.getSimpleName();
     private static final int REQUEST_MAPS_PERMISSIONS_ON_START = 5005;
     private static final int REQUEST_MAPS_PERMISSIONS_ON_MAP_SETUP = 5006;
+    private static final int PROXIMITY_RADIUS = 10000;
     private String url;
     private long serviceBindTime = System.currentTimeMillis();
     private GoogleMap googleMap;
     private LocationService service;
     private MyBroadcastReceiver myBroadcastReceiver;
-    private int PROXIMITY_RADIUS = 10000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-                ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+        if (!CheckGooglePlayServices()) {
+            Log.d(TAG, "onCreate, Finishing test case since Google Play Services are not available");
+            finish();
+        } else {
+            Log.d(TAG, "onCreate, Google Play Services available.");
+        }
+        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermissions(REQUEST_MAPS_PERMISSIONS_ON_START);
         } else {
@@ -53,6 +64,19 @@ public class MapsActivity extends AppCompatActivity
         }
         myBroadcastReceiver = new MyBroadcastReceiver();
 
+    }
+
+    private boolean CheckGooglePlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result,
+                        0).show();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -114,8 +138,6 @@ public class MapsActivity extends AppCompatActivity
         } else {
             setupMap();
         }
-
-
     }
 
     private void setupMap() {
@@ -178,16 +200,6 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
-        StringBuilder googlePlacesUrl = new
-                StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append("&type=" + nearbyPlace);
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
-        return (googlePlacesUrl.toString());
-    }
 
     private class MyBroadcastReceiver extends BroadcastReceiver {
         Location location;
@@ -198,6 +210,10 @@ public class MapsActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             location = MapsActivity.this.service.currentLocation;
+            Object[] DataTransfer = new Object[2];
+            String search = "car_wash";
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
             myPosition = new LatLng(location.getLatitude(),
                     location.getLongitude());
             Log.d(TAG, myPosition.toString());
@@ -205,10 +221,25 @@ public class MapsActivity extends AppCompatActivity
             zoom = CameraUpdateFactory.zoomTo(15);
             googleMap.moveCamera(center);
             googleMap.animateCamera(zoom);
+            String url = getUrl(latitude, longitude, search);
+            DataTransfer[0] = googleMap;
+            DataTransfer[0] = url;
+            GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+            getNearbyPlacesData.execute(DataTransfer);
+            Toast.makeText(MapsActivity.this, "These are your Nearby Carwash! ",
+                    Toast.LENGTH_LONG).show();
+        }
 
-            //url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + myPosition + "radius=500&type=car_wash&key=AIzaSyDAnnZpnibdveHghw0KtROBZjyfY1s7xjU";
+        private String getUrl(double latitude, double longitude, String nearbyPlace) {
+            StringBuilder googlePlacesUrl = new
+                    StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+            googlePlacesUrl.append("location=" + latitude + "," + longitude);
+            googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+            googlePlacesUrl.append("&type=" + nearbyPlace);
+            googlePlacesUrl.append("&sensor=true");
+            googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
+            return (googlePlacesUrl.toString());
         }
     }
-
 
 }
