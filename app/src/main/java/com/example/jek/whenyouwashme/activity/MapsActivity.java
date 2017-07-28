@@ -213,7 +213,7 @@ public class MapsActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             location = MapsActivity.this.service.currentLocation;
-            DataTransfer<GoogleMap, String> dataTransfer;
+            DataTransfer dataTransfer;
             String search = "car_wash";
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
@@ -229,7 +229,7 @@ public class MapsActivity extends AppCompatActivity
             if (setCurrentLocation == null) {
                 setCurrentLocation = location;
                 String url = getUrl(latitude, longitude, search);
-                dataTransfer = new DataTransfer<>(googleMap, url);
+                dataTransfer = new DataTransfer(googleMap, url);
                 Log.d(TAG, "dataTransfer: " + dataTransfer + " " + "googleMap: " + googleMap);
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MapsActivity.this, "These are your Nearest Carwash! ",
@@ -240,7 +240,7 @@ public class MapsActivity extends AppCompatActivity
             } else if (setCurrentLocation.distanceTo(location) > 5000) {
                 setCurrentLocation = location;
                 String url = getUrl(latitude, longitude, search);
-                dataTransfer = new DataTransfer<>(googleMap, url);
+                dataTransfer = new DataTransfer(googleMap, url);
                 getNearbyPlacesData.execute(dataTransfer);
                 //center map on current user location with radius 11 km
                 googleMap.moveCamera(center);

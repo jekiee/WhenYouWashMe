@@ -1,31 +1,33 @@
 package com.example.jek.whenyouwashme.model.googleMaps;
 
+import com.google.android.gms.maps.GoogleMap;
+
 /**
  * Created by jek on 28.07.2017.
  */
 
-public class DataTransfer<T1, T2> {
-    private T1 t1;
-    private T2 t2;
+public class DataTransfer {
+    private GoogleMap googleMap;
+    private String url;
 
-    public DataTransfer(T1 t1, T2 t2) {
-        this.t1 = t1;
-        this.t2 = t2;
+    public DataTransfer(GoogleMap googleMap, String url) {
+        this.googleMap = googleMap;
+        this.url = url;
     }
 
-    public T1 getT1() {
-        return t1;
+    public GoogleMap getGoogleMap() {
+        return googleMap;
     }
 
-    public void setT1(T1 t1) {
-        this.t1 = t1;
+    public void setGoogleMap(GoogleMap googleMap) {
+        this.googleMap = googleMap;
     }
 
-    public T2 getT2() {
-        return t2;
+    public String getUrl() {
+        return url;
     }
 
-    public void setT2(T2 t2) {
-        this.t2 = t2;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
