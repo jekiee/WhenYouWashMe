@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.UserManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
+import com.example.jek.whenyouwashme.model.googleMaps.DataTransfer;
 import com.example.jek.whenyouwashme.model.googleMaps.GetNearbyPlacesData;
 import com.example.jek.whenyouwashme.services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,6 +46,8 @@ public class MapsActivity extends AppCompatActivity
     private GoogleMap googleMap;
     private LocationService service;
     private MyBroadcastReceiver myBroadcastReceiver;
+    private double distance;
+    private Location setCurrentLocation;
 
 
     @Override
@@ -63,7 +67,6 @@ public class MapsActivity extends AppCompatActivity
             bindLocationService();
         }
         myBroadcastReceiver = new MyBroadcastReceiver();
-
     }
 
     private boolean CheckGooglePlayServices() {
@@ -210,7 +213,7 @@ public class MapsActivity extends AppCompatActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             location = MapsActivity.this.service.currentLocation;
-            Object[] DataTransfer = new Object[2];
+            DataTransfer<GoogleMap, String> dataTransfer;
             String search = "car_wash";
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
@@ -219,15 +222,30 @@ public class MapsActivity extends AppCompatActivity
             Log.d(TAG, myPosition.toString());
             center = CameraUpdateFactory.newLatLng(myPosition);
             zoom = CameraUpdateFactory.zoomTo(15);
-            googleMap.moveCamera(center);
-            googleMap.animateCamera(zoom);
-            String url = getUrl(latitude, longitude, search);
-            DataTransfer[0] = googleMap;
-            DataTransfer[0] = url;
+            /*googleMap.moveCamera(center);
+            googleMap.animateCamera(zoom);*/
             GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-            getNearbyPlacesData.execute(DataTransfer);
-            Toast.makeText(MapsActivity.this, "These are your Nearby Carwash! ",
-                    Toast.LENGTH_LONG).show();
+
+            if (setCurrentLocation == null) {
+                setCurrentLocation = location;
+                String url = getUrl(latitude, longitude, search);
+                dataTransfer = new DataTransfer<>(googleMap, url);
+                Log.d(TAG, "dataTransfer: " + dataTransfer + " " + "googleMap: " + googleMap);
+                getNearbyPlacesData.execute(dataTransfer);
+                Toast.makeText(MapsActivity.this, "These are your Nearest Carwash! ",
+                        Toast.LENGTH_LONG).show();
+                //center map on current user location with radius 11 km
+                googleMap.moveCamera(center);
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            } else if (setCurrentLocation.distanceTo(location) > 5000) {
+                setCurrentLocation = location;
+                String url = getUrl(latitude, longitude, search);
+                dataTransfer = new DataTransfer<>(googleMap, url);
+                getNearbyPlacesData.execute(dataTransfer);
+                //center map on current user location with radius 11 km
+                googleMap.moveCamera(center);
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            }
         }
 
         private String getUrl(double latitude, double longitude, String nearbyPlace) {

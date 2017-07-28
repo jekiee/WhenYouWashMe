@@ -3,7 +3,6 @@ package com.example.jek.whenyouwashme.model.googleMaps;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,6 +10,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.List;
+
 
 /**
  * Created by jek on 27.07.2017.
@@ -62,8 +62,8 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             mMap.addMarker(markerOptions);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            /*mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));*/
         }
     }
 }
