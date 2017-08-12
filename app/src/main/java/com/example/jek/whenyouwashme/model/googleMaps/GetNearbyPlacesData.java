@@ -11,23 +11,25 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.jek.whenyouwashme.R.id.location;
 
 /**
  * Created by jek on 27.07.2017.
  */
 
-public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
+public class GetNearbyPlacesData extends AsyncTask<DataTransfer, String, String> {
 
     String googlePlacesData;
     GoogleMap mMap;
     String url;
 
     @Override
-    protected String doInBackground(Object... params) {
+    protected String doInBackground(DataTransfer... params) {
         try {
             Log.d("GetNearbyPlacesData", "doInBackground entered");
-            mMap = (GoogleMap) params[0];
-            url = (String) params[1];
+            DataTransfer dt = params[0];
+            mMap = dt.getGoogleMap();
+            url = dt.getUrl();
             DownloadUrl downloadUrl = new DownloadUrl();
             googlePlacesData = downloadUrl.readUrl(url);
             Log.d("GooglePlacesReadTask", "doInBackground Exit");

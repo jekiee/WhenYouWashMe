@@ -8,20 +8,30 @@
     android:orientation="vertical"
     android:title="@string/app_name">
 
+
     <ImageView
-        android:id="@+id/avatar"
+        android:id="@+id/settings_toolbar"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginLeft="20dp"
         android:background="@color/colorPrimaryDark"
         android:scaleType="fitCenter"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_settings_black_48px" />
 
-    <!--<Button
-        android:id="@+id/btnSetImg"
+    <TextView
+        android:id="@+id/location_toolbar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:text="Minsk"
+        android:textColor="#cecece"
+        android:textSize="40sp" />
+
+    <ImageView
+        android:id="@+id/refresh_toolbar"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
         android:layout_gravity="end"
-        android:text="set img"
-        android:textSize="22sp" />-->
+        android:background="@color/colorPrimaryDark"
+        android:src="@drawable/ic_autorenew_black_48px"
+        android:textSize="22sp" />
 </android.support.v7.widget.Toolbar>

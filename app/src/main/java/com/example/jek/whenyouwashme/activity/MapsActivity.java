@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.UserManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -214,6 +213,7 @@ public class MapsActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             location = MapsActivity.this.service.currentLocation;
             DataTransfer dataTransfer;
+            //Object[] dataTransfer = new Object[2];
             String search = "car_wash";
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
@@ -230,6 +230,9 @@ public class MapsActivity extends AppCompatActivity
                 setCurrentLocation = location;
                 String url = getUrl(latitude, longitude, search);
                 dataTransfer = new DataTransfer(googleMap, url);
+                //dataTransfer[0] = googleMap;
+                //dataTransfer[1] = url;
+                //dataTransfer = new DataTransfer(googleMap, url);
                 Log.d(TAG, "dataTransfer: " + dataTransfer + " " + "googleMap: " + googleMap);
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MapsActivity.this, "These are your Nearest Carwash! ",
@@ -241,6 +244,8 @@ public class MapsActivity extends AppCompatActivity
                 setCurrentLocation = location;
                 String url = getUrl(latitude, longitude, search);
                 dataTransfer = new DataTransfer(googleMap, url);
+                //dataTransfer[0] = googleMap;
+                //dataTransfer[1] = url;
                 getNearbyPlacesData.execute(dataTransfer);
                 //center map on current user location with radius 11 km
                 googleMap.moveCamera(center);

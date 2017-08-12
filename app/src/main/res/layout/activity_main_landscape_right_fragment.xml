@@ -35,7 +35,7 @@
         android:gravity="center|right"
         android:paddingRight="11dp"
         android:text="Time after last \ncar wash"
-        android:textSize="24sp"
+        android:textSize="22sp"
         app:layout_heightPercent="28%" />
 
     <TextView
@@ -52,24 +52,24 @@
         tools:text="3d. 06h." />
 
     <Button
-        android:id="@+id/buttonWashed"
+        android:id="@+id/buttonNearestCarWashes"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentRight="true"
         android:layout_below="@id/setWashingText"
         android:layout_toRightOf="@id/horizontal_anchor"
-        android:text="Washed"
-        android:textSize="22sp"
+        android:text="Nearest \ncar washes"
+        android:textSize="18sp"
         app:layout_heightPercent="28%" />
 
     <Button
-        android:id="@+id/buttonNearestCarWashes"
+        android:id="@+id/buttonWashed"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/buttonWashed"
+        android:layout_below="@id/buttonNearestCarWashes"
         android:layout_toRightOf="@id/horizontal_anchor"
-        android:text="Nearest \ncar washes"
+        android:text="Washed"
         android:textSize="22sp"
         app:layout_heightPercent="28%" />
 
