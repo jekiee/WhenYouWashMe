@@ -48,7 +48,6 @@ public class MapsActivity extends AppCompatActivity
     private double distance;
     private Location setCurrentLocation;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -202,7 +201,6 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-
     private class MyBroadcastReceiver extends BroadcastReceiver {
         Location location;
         LatLng myPosition;
@@ -213,7 +211,6 @@ public class MapsActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             location = MapsActivity.this.service.currentLocation;
             DataTransfer dataTransfer;
-            //Object[] dataTransfer = new Object[2];
             String search = "car_wash";
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
@@ -222,17 +219,12 @@ public class MapsActivity extends AppCompatActivity
             Log.d(TAG, myPosition.toString());
             center = CameraUpdateFactory.newLatLng(myPosition);
             zoom = CameraUpdateFactory.zoomTo(15);
-            /*googleMap.moveCamera(center);
-            googleMap.animateCamera(zoom);*/
             GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
 
             if (setCurrentLocation == null) {
                 setCurrentLocation = location;
                 String url = getUrl(latitude, longitude, search);
                 dataTransfer = new DataTransfer(googleMap, url);
-                //dataTransfer[0] = googleMap;
-                //dataTransfer[1] = url;
-                //dataTransfer = new DataTransfer(googleMap, url);
                 Log.d(TAG, "dataTransfer: " + dataTransfer + " " + "googleMap: " + googleMap);
                 getNearbyPlacesData.execute(dataTransfer);
                 Toast.makeText(MapsActivity.this, "These are your Nearest Carwash! ",
@@ -244,8 +236,6 @@ public class MapsActivity extends AppCompatActivity
                 setCurrentLocation = location;
                 String url = getUrl(latitude, longitude, search);
                 dataTransfer = new DataTransfer(googleMap, url);
-                //dataTransfer[0] = googleMap;
-                //dataTransfer[1] = url;
                 getNearbyPlacesData.execute(dataTransfer);
                 //center map on current user location with radius 11 km
                 googleMap.moveCamera(center);
@@ -264,5 +254,4 @@ public class MapsActivity extends AppCompatActivity
             return (googlePlacesUrl.toString());
         }
     }
-
 }

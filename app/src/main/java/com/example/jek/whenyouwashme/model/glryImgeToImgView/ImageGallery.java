@@ -20,14 +20,14 @@ import com.example.jek.whenyouwashme.R;
 
 public class ImageGallery extends Activity {
     private static int RESULT_LOAD_IMAGE = 1;
-    ImageView imageView;
+    ImageView settings;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
         setContentView(R.layout.toolbar);
-        imageView = (ImageView) findViewById(R.id.avatar);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        settings = (ImageView) findViewById(R.id.settings_toolbar);
+        settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK,
@@ -54,7 +54,7 @@ public class ImageGallery extends Activity {
             cursor.close();
 
             //imageView = (ImageView) findViewById(R.id.avatar);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            settings.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
         }
     }

@@ -19,9 +19,9 @@ import static com.example.jek.whenyouwashme.R.id.location;
 
 public class GetNearbyPlacesData extends AsyncTask<DataTransfer, String, String> {
 
-    String googlePlacesData;
-    GoogleMap mMap;
-    String url;
+    private String googlePlacesData;
+    private GoogleMap mMap;
+    private String url;
 
     @Override
     protected String doInBackground(DataTransfer... params) {

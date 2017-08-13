@@ -83,7 +83,7 @@ public class FirebaseActivity extends AppCompatActivity implements ChildEventLis
         messageDatabaseReference = FirebaseDatabase.getInstance().getReference("messages");
         profileDatabaseReference = FirebaseDatabase.getInstance().getReference("profiles");
 
-        imageView = (ImageView) findViewById(R.id.avatar);
+        imageView = (ImageView) findViewById(R.id.settings_toolbar);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
