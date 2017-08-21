@@ -28,7 +28,7 @@ public class RemoteFetch extends BroadcastReceiver {
 
     public static JSONObject getJSON(Context context, String location) {
         try {
-            URL url = new URL(String.format(weatherForecastURL));
+            URL url = new URL(weatherForecastURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty("x-api-key", context.getString(R.string.open_weather_maps_app_id));
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

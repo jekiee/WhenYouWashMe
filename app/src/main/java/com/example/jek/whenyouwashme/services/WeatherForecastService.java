@@ -31,14 +31,13 @@ public class WeatherForecastService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final int WEATHER_FORECAST_SERVICE_ID = 375;
     private static final String TAG = WeatherForecastService.class.getSimpleName();
-    private static final long INTERVAL = 1000 * 60; // <--- 1 minute ("1000 * 60 * 60 * 24" <--- 1 day)
+    private static final long INTERVAL = 1000 * 60 * 6; // <--- 1 minute ("1000 * 60 * 60 * 24" <--- 1 day)
     public static final String WEATHER_FORECAST_CLIENT_LOCATION = "client location";
     private IBinder binder = new WeatherForecastBinder();
 
 
     //если времени прошло больше 1 минуты (для теста), то обновить AlarmManager
     //create AlarmManager
-
 
 
     @Nullable
@@ -79,7 +78,7 @@ public class WeatherForecastService extends Service implements
         return START_STICKY;
     }
 
-    private void alarmWeatherForecastService(){
+    private void alarmWeatherForecastService() {
         Context ctx = getApplicationContext();
 /** this gives us the time for the first trigger.  */
         Calendar cal = null;
@@ -110,7 +109,7 @@ public class WeatherForecastService extends Service implements
 
     public class WeatherForecastBinder extends Binder {
 
-        public WeatherForecastService getService(){
+        public WeatherForecastService getService() {
             return WeatherForecastService.this;
         }
     }

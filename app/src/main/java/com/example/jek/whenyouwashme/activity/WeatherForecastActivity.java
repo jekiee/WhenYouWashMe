@@ -54,12 +54,15 @@ public class WeatherForecastActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, WeatherForecastService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WeatherForecastService.WEATHER_FORECAST_CLIENT_LOCATION);
-        registerReceiver(remoteFetch, intentFilter);
+        startService(intent);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(connection);
+        unregisterReceiver(remoteFetch);
+    }
 
     private ServiceConnection connection = new ServiceConnection() {
 

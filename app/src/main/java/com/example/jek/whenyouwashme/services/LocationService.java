@@ -124,11 +124,9 @@ public class LocationService extends Service implements
         } else {
             Log.d(TAG, "incoming location was null!");
         }
-
     }
 
     public class MapBinder extends Binder {
-
         public LocationService getService() {
             return LocationService.this;
         }
