@@ -11,8 +11,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.example.jek.whenyouwashme.R.id.location;
-
 /**
  * Created by jek on 27.07.2017.
  */

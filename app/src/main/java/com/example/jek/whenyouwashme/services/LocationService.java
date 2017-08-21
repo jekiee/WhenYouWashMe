@@ -41,7 +41,6 @@ public class LocationService extends Service implements
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return binder;
     }
 
@@ -50,11 +49,7 @@ public class LocationService extends Service implements
         return super.onUnbind(intent);
     }
 
-    public class MapBinder extends Binder {
-        public LocationService getService() {
-            return LocationService.this;
-        }
-    }
+
 
 
     @Override
@@ -88,8 +83,8 @@ public class LocationService extends Service implements
             sendBroadcast(intent);
         }
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(2 * 60 * 1000);
+        locationRequest.setFastestInterval(60 * 1000);
         locationRequest.setSmallestDisplacement(1);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
@@ -130,5 +125,12 @@ public class LocationService extends Service implements
             Log.d(TAG, "incoming location was null!");
         }
 
+    }
+
+    public class MapBinder extends Binder {
+
+        public LocationService getService() {
+            return LocationService.this;
+        }
     }
 }

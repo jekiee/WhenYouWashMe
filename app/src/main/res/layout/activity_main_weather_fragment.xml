@@ -5,7 +5,7 @@
     android:id="@+id/weatherFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.jek.whenyouwashme.activity.MainActivity">
+    tools:context="com.example.jek.whenyouwashme.activity.WeatherForecastActivity">
 
     <View
         android:id="@+id/horizontal_anchor"
@@ -25,7 +25,7 @@
         tools:text="Thursday, 20 april, 16:45" />
 
     <ImageView
-        android:id="@+id/weatherBigPicture"
+        android:id="@+id/bigPicture_weather_today"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentLeft="true"
@@ -35,7 +35,7 @@
         app:layout_heightPercent="44%" />
 
     <TextView
-        android:id="@+id/temperature"
+        android:id="@+id/temperature_today"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentRight="true"
@@ -47,10 +47,11 @@
         tools:text="+35°C" />
 
     <TextView
+        android:id="@+id/wind_pressure_today"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/temperature"
+        android:layout_below="@id/temperature_today"
         android:layout_toRightOf="@id/horizontal_anchor"
         android:gravity="center|left"
         android:paddingBottom="10sp"
@@ -65,7 +66,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/weatherBigPicture"
+        android:layout_below="@id/bigPicture_weather_today"
         android:orientation="horizontal"
         app:layout_heightPercent="40%">
 

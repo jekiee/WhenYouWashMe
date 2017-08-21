@@ -62,7 +62,7 @@ public class SignUpActivity extends AppCompatActivity {
                             Log.d(TAG, "user is null: " + databaseError.getDetails());
                         }
                     });
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), WeatherForecastActivity.class));
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(),
@@ -85,7 +85,7 @@ public class SignUpActivity extends AppCompatActivity {
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("profiles");
                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     databaseReference.child(uid).setValue(userProfile);
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), WeatherForecastActivity.class));
                     finish();
                 } else {
                     login(email, pass);

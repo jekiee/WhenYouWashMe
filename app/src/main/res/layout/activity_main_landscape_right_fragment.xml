@@ -5,7 +5,7 @@
     android:id="@+id/landscapeRightFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.jek.whenyouwashme.activity.MainActivity">
+    tools:context="com.example.jek.whenyouwashme.activity.WeatherForecastActivity">
 
     <View
         android:id="@+id/horizontal_anchor"

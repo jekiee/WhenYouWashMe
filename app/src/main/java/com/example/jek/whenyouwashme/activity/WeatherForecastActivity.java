@@ -2,21 +2,29 @@ package com.example.jek.whenyouwashme.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.jek.whenyouwashme.R;
 import com.example.jek.whenyouwashme.fragments.FragmentLowerPart;
 import com.example.jek.whenyouwashme.fragments.FragmentRightPart;
 import com.example.jek.whenyouwashme.fragments.FragmentWeather;
+import com.example.jek.whenyouwashme.model.WeatherForecast.RemoteFetch;
+import com.example.jek.whenyouwashme.services.WeatherForecastService;
 
-import static android.R.attr.fragment;
-import static android.R.attr.listPopupWindowStyle;
-
-public class MainActivity extends AppCompatActivity {
-    private final static String TAG = MainActivity.class.getSimpleName();
+public class WeatherForecastActivity extends AppCompatActivity {
+    private static final String TAG = WeatherForecastActivity.class.getSimpleName();
+    WeatherForecastService service;
+    RemoteFetch remoteFetch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +50,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-   /* @Override
+    @Override
     protected void onStart() {
         super.onStart();
-        //startActivity(new Intent(this, FirebaseActivity.class));
-        startActivity(new Intent(this, MapsActivity.class));
-    }*/
+        Intent intent = new Intent(this, WeatherForecastService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WeatherForecastService.WEATHER_FORECAST_CLIENT_LOCATION);
+        registerReceiver(remoteFetch, intentFilter);
+    }
+
+
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "service connected " + System.currentTimeMillis());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "service disconnected");
+        }
+    };
+
+   private void bindWeatherForecastService(){
+       bindService(new Intent(this, WeatherForecastService.class), connection, BIND_AUTO_CREATE);
+   }
+
+    private class WeatherForecastAlarm extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
+    }
+
+
+
+
 }
