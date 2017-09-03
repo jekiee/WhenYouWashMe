@@ -20,7 +20,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:gravity="center"
-        android:textSize="30sp"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
         app:layout_heightPercent="16%"
         tools:text="Thursday, 20 april, 16:45" />
 

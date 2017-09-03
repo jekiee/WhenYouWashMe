@@ -3,12 +3,16 @@ package com.example.jek.whenyouwashme.model.WeatherForecast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.location.Location;
+import android.util.Log;
 
 import com.example.jek.whenyouwashme.R;
+import com.example.jek.whenyouwashme.activity.WeatherForecastActivity;
 import com.example.jek.whenyouwashme.services.LocationService;
 
 import org.json.JSONObject;
+import org.w3c.dom.ls.LSException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,19 +24,20 @@ import java.net.URL;
  */
 
 public class RemoteFetch extends BroadcastReceiver {
+    private static final String TAG = RemoteFetch.class.getSimpleName();
     private Location location;
-    private LocationService service;
+    private LocationService locationService;
     private static String weatherForecastURL;
 
-    //sharedpraferences save last weather update time
+    //sharedpreferences save last weather update time
 
-    public static JSONObject getJSON(Context context, String location) {
+    public static JSONObject getJSON(Context context) {
         try {
             URL url = new URL(weatherForecastURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty("x-api-key", context.getString(R.string.open_weather_maps_app_id));
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer json = new StringBuffer(1024);
+            StringBuilder json = new StringBuilder(1024);
             String tmp = "";
             while ((tmp = reader.readLine()) != null)
                 json.append(tmp).append("\n");
@@ -42,6 +47,7 @@ public class RemoteFetch extends BroadcastReceiver {
             if (data.getInt("cod") != 200) {
                 return null;
             }
+            Log.d(TAG, "JSONobject: " + data.toString());
             return data;
         } catch (Exception e) {
             return null;
@@ -50,15 +56,28 @@ public class RemoteFetch extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        location = RemoteFetch.this.service.currentLocation;
+        /*long futureTime;*/
+
+
+        /*futureTime = LocationService.alarmTime;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            Calendar calendar = Calendar.getInstance();
+            if (calendar.getTimeInMillis() < futureTime) {
+                //LocationService.alarmWeatherForecastService();
+            }
+        }*/
+
+        location = LocationService.currentLocation;
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
         getUrl(latitude, longitude);
+        Log.d(TAG, "onReceive: " + "\n" + "Latitude: " + latitude + "\n" + "Longitude: " + longitude);
     }
 
     private String getUrl(double latitude, double longitude) {
-        StringBuilder sbWeatherForecastURL = new StringBuilder("http://api.openweathermap.org/data/2.5/weather?");
-        sbWeatherForecastURL.append(latitude + "&" + longitude + "&appid=aebffaa07d0394bde5b33f3466a00516");
+        StringBuilder sbWeatherForecastURL = new StringBuilder("http://api.openweathermap.org/data/2.5/forecast?units=metric&");
+        sbWeatherForecastURL.append("lat=" + latitude + "&lon=" + longitude + "&appid=aebffaa07d0394bde5b33f3466a00516");
+        Log.d(TAG, "url: " + sbWeatherForecastURL);
         return weatherForecastURL = sbWeatherForecastURL.toString();
     }
 }

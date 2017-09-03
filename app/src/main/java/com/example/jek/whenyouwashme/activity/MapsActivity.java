@@ -22,7 +22,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
-import com.example.jek.whenyouwashme.model.WeatherForecast.RemoteFetch;
 import com.example.jek.whenyouwashme.model.googleMaps.DataTransfer;
 import com.example.jek.whenyouwashme.model.googleMaps.GetNearbyPlacesData;
 import com.example.jek.whenyouwashme.services.LocationService;
@@ -265,5 +264,4 @@ public class MapsActivity extends AppCompatActivity
             return (googlePlacesUrl.toString());
         }
     }
-
 }

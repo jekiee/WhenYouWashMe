@@ -1,20 +1,26 @@
 package com.example.jek.whenyouwashme.services;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
 import android.location.Location;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -32,15 +38,23 @@ import com.google.android.gms.location.places.Places;
 public class LocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = LocationService.class.getSimpleName();
-
-    public Location currentLocation;
+    private static final long INTERVAL = 1000 * 60 * 60 * 6; // <--- 1 minute ("1000 * 60 * 60 * 24" <--- 1 day) in milliseconds
+    private static final long FUTURE_TIME = 1000 * 60 * 60 * 5;
+    private static final String ALARM_TIME = "time";
+    private static Calendar cal = null;
+    public static Location currentLocation;
     private GoogleApiClient mGoogleApiClient;
     private IBinder binder = new MapBinder();
     public static final String ACTION_LOCATION = "action location";
+    public static long alarmTime;
+    public static final int WEATHER_FORECAST_SERVICE_ID = 375;
+
+    public static final String WEATHER_FORECAST_CLIENT_LOCATION = "client location";
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        alarmWeatherForecastService();
         return binder;
     }
 
@@ -48,9 +62,6 @@ public class LocationService extends Service implements
     public boolean onUnbind(Intent intent) {
         return super.onUnbind(intent);
     }
-
-
-
 
     @Override
     public void onCreate() {
@@ -112,6 +123,47 @@ public class LocationService extends Service implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Location service failed");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
+        return START_STICKY;
+    }
+
+    public void alarmWeatherForecastService() {
+        Context ctx = getApplicationContext();
+/** this gives us the time for the first trigger.  */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            cal = Calendar.getInstance();
+            Log.d(TAG, "time in millis: " + String.valueOf(cal.getTimeInMillis()));
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            editor.putLong(ALARM_TIME, (cal.getTimeInMillis() + FUTURE_TIME));//current time + 6 hours in millis
+        }
+        editor.apply();
+
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        Intent serviceIntent = new Intent(ctx, LocationService.class);
+// make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
+        PendingIntent servicePendingIntent =
+                PendingIntent.getService(ctx,
+                        LocationService.WEATHER_FORECAST_SERVICE_ID, // integer constant used to identify the service
+                        serviceIntent,
+                        PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
+// there are other options like setInexactRepeating, check the docs
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            am.setRepeating(
+                    AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
+                    cal.getTimeInMillis(),
+                    INTERVAL,
+                    servicePendingIntent
+            );
+        }
+        alarmTime = preferences.getLong("time", 0);//get alarm time from shared preferences
     }
 
     @Override

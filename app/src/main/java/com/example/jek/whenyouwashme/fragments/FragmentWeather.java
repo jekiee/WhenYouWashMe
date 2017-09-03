@@ -1,31 +1,35 @@
 package com.example.jek.whenyouwashme.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
+import com.example.jek.whenyouwashme.model.WeatherForecast.RemoteFetch;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by jek on 10.08.2017.
  */
 
 public class FragmentWeather extends Fragment {
-    private final static String LOG = FragmentWeather.class.getSimpleName();
+    private final static String TAG = FragmentWeather.class.getSimpleName();
 
     TextView dateToday;
     TextView windPressure;
@@ -48,6 +52,14 @@ public class FragmentWeather extends Fragment {
     ImageView weatherFourthDayPicture;
     TextView tempertureFourthDay;
 
+    Handler handler;
+
+    Calendar calendar;
+    Date date;
+
+    public FragmentWeather() {
+        handler = new Handler();
+    }
 
     @Nullable
     @Override
@@ -79,24 +91,78 @@ public class FragmentWeather extends Fragment {
         weatherFourthDayPicture = (ImageView) fourthDay.findViewById(R.id.weatherImg);
         tempertureFourthDay = (TextView) fourthDay.findViewById(R.id.temperature);
 
+
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Thread timerThread;
+
+        Runnable runnable = new SetCurrentTime();
+        timerThread = new Thread(runnable);
+        timerThread.start();
+    }
+
+    private void doWork() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                calendar = Calendar.getInstance();
+                date = calendar.getTime();
+                dateToday.setText(new SimpleDateFormat("EEEE, d MMMM, HH:mm:ss", Locale.ENGLISH).format(date.getTime()));
+            }
+        });
+    }
+
+    private class SetCurrentTime implements Runnable {
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    doWork();
+                    Thread.sleep(1000);
+                } catch (Exception ignored) {
+                }
+            }
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    private void updateWeatherData() {
+        updateWeatherData();
     }
 
     private void renderWeather(JSONObject json) {
         try {
-            DateFormat df = DateFormat.getDateTimeInstance();
-            String date = df.format(new Date(json.getLong("dt") * 1000));
 
+            Log.d(TAG, String.valueOf(json));
         } catch (Exception e) {
-            Log.e(LOG, "One of the fields not found in the JSON data");
+            Log.e(TAG, "One of the fields not found in the JSON data");
         }
+    }
+
+    private void updateWeatherData() {
+        new Thread() {
+            public void run() {
+                final JSONObject json = RemoteFetch.getJSON(getActivity());
+                if (json == null) {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            Toast.makeText(getActivity(),
+                                    getActivity().getString(R.string.place_not_found),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            renderWeather(json);
+                        }
+                    });
+                }
+            }
+        }.start();
     }
 }
