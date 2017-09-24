@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -29,36 +30,56 @@ public class WeatherForecastActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        Log.d(TAG, "onCreate: ");
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         FragmentWeather fragmentWeather = new FragmentWeather();
         FragmentLowerPart fragmentLowerPart = new FragmentLowerPart();
         FragmentRightPart fragmentRightPart = new FragmentRightPart();
+
         if (getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.activity_main_portrait);
-            fragmentTransaction.add(R.id.weather_part, fragmentWeather);
-            fragmentTransaction.add(R.id.lower_part, fragmentLowerPart);
-            fragmentTransaction.commit();
+            if (savedInstanceState == null) {
+                setContentView(R.layout.activity_main_portrait);
+                Log.d(TAG, "savedInstanceState == null, portrait orient");
+                getFragmentManager().beginTransaction().replace(R.id.weather_part, FragmentWeather.newInstance()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.lower_part, FragmentLowerPart.newInstance()).commit();
+            } else {
+                Log.d(TAG, "savedInstanceState != null, portrait orient");
+                setContentView(R.layout.activity_main_portrait);
+            }
+
+//            fragmentTransaction.add(R.id.weather_part, fragmentWeather);
+//            fragmentTransaction.add(R.id.lower_part, fragmentLowerPart);
+//            fragmentTransaction.commit();
         } else {
-            //Log.d(TAG, "switch to else");
-            setContentView(R.layout.activity_main_landscape);
-            fragmentTransaction.add(R.id.weather_part, fragmentWeather);
-            fragmentTransaction.add(R.id.right_part, fragmentRightPart);
-            fragmentTransaction.commit();
+            if (savedInstanceState == null) {
+                Log.d(TAG, "savedInstanceState == null, landscape orient");
+                setContentView(R.layout.activity_main_landscape);
+                getFragmentManager().beginTransaction().replace(R.id.weather_part, FragmentWeather.newInstance()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.right_part, FragmentRightPart.newInstance()).commit();
+            }else {
+                Log.d(TAG, "savedInstanceState != null, landscape orient");
+                setContentView(R.layout.activity_main_landscape);
+                getFragmentManager().beginTransaction().replace(R.id.right_part, FragmentRightPart.newInstance()).commit();
+                //Log.d(TAG, "switch to else");
+            }
+//            fragmentTransaction.add(R.id.weather_part, fragmentWeather);
+//            fragmentTransaction.add(R.id.right_part, fragmentRightPart);
+//            fragmentTransaction.commit();
         }
 
         remoteFetch = new RemoteFetch();
 
-        Gson gson = new Gson();
-        TestObj obj = new TestObj();
-        obj.setId(12);
-        obj.setText("text");
-
-        String json = gson.toJson(obj);
-        Log.d(TAG, "json : " + json);
-
-        TestObj newObj = gson.fromJson(json, TestObj.class);
+//        Gson gson = new Gson();
+//        TestObj obj = new TestObj();
+//        obj.setId(12);
+//        obj.setText("text");
+//
+//        String json = gson.toJson(obj);
+//        Log.d(TAG, "json : " + json);
+//
+//        TestObj newObj = gson.fromJson(json, TestObj.class);
     }
 
     public static class TestObj {
@@ -123,4 +144,6 @@ public class WeatherForecastActivity extends AppCompatActivity {
     private void bindWeatherForecastService() {
         bindService(new Intent(this, LocationService.class), connection, BIND_AUTO_CREATE);
     }
+
+
 }

@@ -23,8 +23,14 @@ public class WeatherData {
 
     public int temp_max;
     public int pressure;
+
+    @SerializedName("clouds")
     public String clouds; //weather/main:
+
+    @SerializedName("speed")
     public String windSpeed;
+
+    @SerializedName("deg")
     public String windDirection;
 
     public List<Tag> tags;
@@ -32,4 +38,3 @@ public class WeatherData {
     public WeatherData() {
     }
 }
-

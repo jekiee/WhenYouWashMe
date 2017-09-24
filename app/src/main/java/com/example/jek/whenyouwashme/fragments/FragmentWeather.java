@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +17,8 @@ import android.widget.Toast;
 import com.example.jek.whenyouwashme.R;
 import com.example.jek.whenyouwashme.model.WeatherForecast.RemoteFetch;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -52,10 +52,18 @@ public class FragmentWeather extends Fragment {
     ImageView weatherFourthDayPicture;
     TextView tempertureFourthDay;
 
-    Handler handler;
-
     Calendar calendar;
     Date date;
+
+    Handler handler;
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            dateToday.setText(new SimpleDateFormat("EEEE, d MMMM, HH:mm:ss", Locale.getDefault()).format(new Date()));
+            handler.postDelayed(runnable, 1000);
+        }
+    };
 
     public FragmentWeather() {
         handler = new Handler();
@@ -91,41 +99,20 @@ public class FragmentWeather extends Fragment {
         weatherFourthDayPicture = (ImageView) fourthDay.findViewById(R.id.weatherImg);
         tempertureFourthDay = (TextView) fourthDay.findViewById(R.id.temperature);
 
-
         return rootView;
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Thread timerThread;
+       /* Thread timerThread;
+
 
         Runnable runnable = new SetCurrentTime();
         timerThread = new Thread(runnable);
-        timerThread.start();
-    }
-
-    private void doWork() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                calendar = Calendar.getInstance();
-                date = calendar.getTime();
-                dateToday.setText(new SimpleDateFormat("EEEE, d MMMM, HH:mm:ss", Locale.ENGLISH).format(date.getTime()));
-            }
-        });
-    }
-
-    private class SetCurrentTime implements Runnable {
-        public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    doWork();
-                    Thread.sleep(1000);
-                } catch (Exception ignored) {
-                }
-            }
-        }
+        timerThread.start();*/
     }
 
     @Override
@@ -134,13 +121,54 @@ public class FragmentWeather extends Fragment {
         updateWeatherData();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: " + handler.getClass().toString());
+        handler.post(runnable);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: " + handler.getClass().toString());
+        handler.removeCallbacks(runnable);
+    }
+
     private void renderWeather(JSONObject json) {
         try {
-
+            JSONObject wind = json.getJSONArray("list").getJSONObject(0).getJSONObject("wind");
+            JSONObject weatherToday = json.getJSONArray("list").getJSONObject(0).getJSONArray("weather").getJSONObject(0);
+            JSONObject weatherActual = json.getJSONArray("list").getJSONObject(0).getJSONObject("main");
+            String temperatureActualString = weatherActual.getString("temp");
+            String pressureActual = weatherActual.getString("pressure");
+            //long temperature = Math.round(Double.parseDouble(temperatureActualString));
+            long temperature = Math.round(Double.parseDouble(temperatureActualString));
+            if (temperature > 0) {
+                tempertureToday.setText("+" + temperature + fromHtml("&#176")/* + R.string.temperature_in_gradus*/ + "C");
+            } else {
+                tempertureToday.setText(String.valueOf(temperature) + fromHtml("&#176") + "C");
+            }
+            //int temperature = Integer.valueOf(temperatureActualString);
+            Log.d(TAG, "\u00B0");
+            Log.d(TAG, weatherToday.getString("main"));
+            Log.d(TAG, String.valueOf(wind));
+            Log.d(TAG, String.valueOf(weatherToday));
             Log.d(TAG, String.valueOf(json));
         } catch (Exception e) {
             Log.e(TAG, "One of the fields not found in the JSON data");
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Spanned fromHtml(String html) {
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(html);
+        }
+        return result;
     }
 
     private void updateWeatherData() {
@@ -164,5 +192,10 @@ public class FragmentWeather extends Fragment {
                 }
             }
         }.start();
+    }
+
+    public static FragmentWeather newInstance() {
+        FragmentWeather fragmentWeather = new FragmentWeather();
+        return fragmentWeather;
     }
 }

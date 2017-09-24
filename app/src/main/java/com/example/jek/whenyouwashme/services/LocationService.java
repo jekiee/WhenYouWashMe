@@ -133,37 +133,42 @@ public class LocationService extends Service implements
 
     public void alarmWeatherForecastService() {
         Context ctx = getApplicationContext();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
 /** this gives us the time for the first trigger.  */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             cal = Calendar.getInstance();
             Log.d(TAG, "time in millis: " + String.valueOf(cal.getTimeInMillis()));
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = preferences.edit();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            editor.putLong(ALARM_TIME, (cal.getTimeInMillis() + FUTURE_TIME));//current time + 6 hours in millis
-        }
-        editor.apply();
+            if(cal.getTimeInMillis() > alarmTime){
 
-        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        Intent serviceIntent = new Intent(ctx, LocationService.class);
-// make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
-        PendingIntent servicePendingIntent =
-                PendingIntent.getService(ctx,
-                        LocationService.WEATHER_FORECAST_SERVICE_ID, // integer constant used to identify the service
-                        serviceIntent,
-                        PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
-// there are other options like setInexactRepeating, check the docs
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            am.setRepeating(
-                    AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
-                    cal.getTimeInMillis(),
-                    INTERVAL,
-                    servicePendingIntent
-            );
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    editor.putLong(ALARM_TIME, (cal.getTimeInMillis() + FUTURE_TIME));//current time + 6 hours in millis
+                }
+                editor.apply();
+
+                AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+                Intent serviceIntent = new Intent(ctx, LocationService.class);
+    // make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
+                PendingIntent servicePendingIntent =
+                        PendingIntent.getService(ctx,
+                                LocationService.WEATHER_FORECAST_SERVICE_ID, // integer constant used to identify the service
+                                serviceIntent,
+                                PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
+    // there are other options like setInexactRepeating, check the docs
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    am.setRepeating(
+                            AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
+                            cal.getTimeInMillis(),
+                            INTERVAL,
+                            servicePendingIntent
+                    );
+                }
+                alarmTime = preferences.getLong("time", 0);//get alarm time from shared preferences
+            }
         }
-        alarmTime = preferences.getLong("time", 0);//get alarm time from shared preferences
     }
 
     @Override

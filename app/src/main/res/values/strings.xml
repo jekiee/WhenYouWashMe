@@ -5,11 +5,13 @@
     <string name="alert_no_gps_permission">no GPS permission</string>
     <string name="hello_blank_fragment">hello blank fragment</string>
     <string name="alert_no_camera_permission">no camera permission</string>
+    <string name="temperature_in_gradus">&#176;</string>
 
     <!-- weather forecast -->
     <string name="open_weather_maps_app_id">aebffaa07d0394bde5b33f3466a00516</string>
     <string name="weather_sunny">&#xf00d;</string>
     <string name="weather_clear_night">&#xf02e;</string>
+
 
     <string name="weather_foggy">&#xf014;</string>
     <string name="weather_cloudy">&#xf013;</string>

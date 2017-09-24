@@ -43,7 +43,7 @@
         android:layout_below="@id/dateToday"
         android:layout_toRightOf="@id/horizontal_anchor"
         android:gravity="center|left"
-        android:textSize="65sp"
+        android:textSize="50sp"
         app:layout_heightPercent="22%"
         tools:text="+35°C" />
 
