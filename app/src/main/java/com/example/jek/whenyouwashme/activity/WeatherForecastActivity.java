@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -17,9 +16,10 @@ import com.example.jek.whenyouwashme.R;
 import com.example.jek.whenyouwashme.fragments.FragmentLowerPart;
 import com.example.jek.whenyouwashme.fragments.FragmentRightPart;
 import com.example.jek.whenyouwashme.fragments.FragmentWeather;
-import com.example.jek.whenyouwashme.model.WeatherForecast.RemoteFetch;
+import com.example.jek.whenyouwashme.model.weatherForecast.RemoteFetch;
 import com.example.jek.whenyouwashme.services.LocationService;
-import com.google.gson.Gson;
+
+// активити отрисовывающее погоду
 
 public class WeatherForecastActivity extends AppCompatActivity {
     private static final String TAG = WeatherForecastActivity.class.getSimpleName();
@@ -31,12 +31,15 @@ public class WeatherForecastActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 //        Log.d(TAG, "onCreate: ");
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentWeather fragmentWeather = new FragmentWeather();
-        FragmentLowerPart fragmentLowerPart = new FragmentLowerPart();
-        FragmentRightPart fragmentRightPart = new FragmentRightPart();
-
+//        FragmentManager fragmentManager = getFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        FragmentWeather fragmentWeather = new FragmentWeather();
+//        FragmentLowerPart fragmentLowerPart = new FragmentLowerPart();
+//        FragmentRightPart fragmentRightPart = new FragmentRightPart();
+//
+//          первым if'ом определяем ориентацию экрана - портретный/ландшафтный
+//          второй if перерисовывает фрагменты активити, удаляя старые, иначе они накладываются друг на друга
+//          после каждого поворота экрана
         if (getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_PORTRAIT) {
             if (savedInstanceState == null) {
@@ -103,6 +106,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
         }
     }
 
+    //в методе биндимся к сервису LocationService
+    //и регистрируем наш ресивер на получение данных от сервиса
     @Override
     protected void onStart() {
         super.onStart();
@@ -118,6 +123,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    //отключаемся от сервиса и отменяем регистрацию ресивера
     @Override
     protected void onStop() {
         super.onStop();
@@ -125,6 +131,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
         unregisterReceiver(remoteFetch);
     }
 
+    //а хз что тут происходит, вроде как 
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override

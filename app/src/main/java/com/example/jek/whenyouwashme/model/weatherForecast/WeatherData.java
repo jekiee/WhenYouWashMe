@@ -1,4 +1,4 @@
-package com.example.jek.whenyouwashme.model.WeatherForecast;
+package com.example.jek.whenyouwashme.model.weatherForecast;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,10 +9,6 @@ import java.util.List;
  */
 
 public class WeatherData {
-
-    public String message;
-
-    public String intString;
 
     @SerializedName("temp")
     public int temp;

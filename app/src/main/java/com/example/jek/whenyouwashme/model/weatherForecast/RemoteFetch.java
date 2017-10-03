@@ -1,4 +1,4 @@
-package com.example.jek.whenyouwashme.model.WeatherForecast;
+package com.example.jek.whenyouwashme.model.weatherForecast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,6 +20,10 @@ import java.text.DecimalFormat;
 /**
  * Created by jek on 13.08.2017.
  */
+
+// класс формирует URL (метод getURL) и JSONобъект (getJSON)
+// метод onReceive (переопределенный метод абстрактоного класса BroadcastReceiver) получает
+// от сервиса LocationService координаты latitude и longitute
 
 public class RemoteFetch extends BroadcastReceiver {
     private static final String TAG = RemoteFetch.class.getSimpleName();

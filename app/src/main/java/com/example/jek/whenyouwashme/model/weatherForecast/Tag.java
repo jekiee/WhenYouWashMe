@@ -1,4 +1,4 @@
-package com.example.jek.whenyouwashme.model.WeatherForecast;
+package com.example.jek.whenyouwashme.model.weatherForecast;
 
 public class Tag{
     public String url;

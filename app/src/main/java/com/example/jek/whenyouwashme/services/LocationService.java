@@ -35,6 +35,9 @@ import com.google.android.gms.location.places.Places;
  * Created by jek on 04.07.2017.
  */
 
+// сервис используется для получения текущих координат пользователя и запуска
+// AlarmManager'а (внутренний сервис андроида, который следит за временем грубо говоря)
+
 public class LocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = LocationService.class.getSimpleName();

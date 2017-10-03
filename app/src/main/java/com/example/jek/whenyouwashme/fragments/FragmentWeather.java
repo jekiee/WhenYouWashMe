@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
-import com.example.jek.whenyouwashme.model.WeatherForecast.RemoteFetch;
+import com.example.jek.whenyouwashme.model.weatherForecast.RemoteFetch;
 
 import org.json.JSONObject;
 
