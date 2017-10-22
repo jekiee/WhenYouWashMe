@@ -80,6 +80,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Intent intent = new Intent(this, LocationService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
     @Override
