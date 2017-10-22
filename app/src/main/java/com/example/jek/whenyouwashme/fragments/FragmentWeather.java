@@ -21,10 +21,12 @@ import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
 import com.example.jek.whenyouwashme.activity.WeatherForecastActivity;
+import com.example.jek.whenyouwashme.model.weatherForecast.Forecast;
 import com.example.jek.whenyouwashme.model.weatherForecast.WeatherData;
 import com.example.jek.whenyouwashme.services.LocationService;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -145,6 +147,12 @@ public class FragmentWeather extends Fragment {
 
     private void renderWeather(WeatherData data) {
         try {
+            Forecast[] days = new Forecast[5];
+            Calendar calendar = Calendar.getInstance();
+            for (int i = 0; i < days.length; i++) {
+                days[i] = new Forecast(calendar.getTime());
+                calendar.add(Calendar.DATE, 1);
+            }
             double dtemperature = data.info[0].weather.temp;
             long temperature = Math.round(dtemperature);
             if (temperature > 0) {
