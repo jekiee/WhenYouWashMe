@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.example.jek.whenyouwashme.R;
 import com.example.jek.whenyouwashme.services.LocationService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
@@ -18,7 +20,7 @@ import java.text.DecimalFormat;
 public class RemoteFetch {
     private static final String TAG = RemoteFetch.class.getSimpleName();
 
-    public JSONObject getJSON(Context context) {
+    public WeatherData getWeather(Context context) {
 
         try {
             URL url = new URL(initLocation(context));
@@ -30,13 +32,17 @@ public class RemoteFetch {
             while ((tmp = reader.readLine()) != null)
                 json.append(tmp).append("\n");
             reader.close();
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting();
 
-            JSONObject data = new JSONObject(json.toString());
-            if (data.getInt("cod") != 200) {
+            Gson gson = builder.create();
+            WeatherData wth = gson.fromJson(json.toString(), WeatherData.class);
+            if (!wth.cod.equals("200")) {
                 return null;
             }
-            Log.d(TAG, "JSONobject: " + data.toString());
-            return data;
+
+            Log.d(TAG, "JSON: " + json);
+            return wth;
         } catch (Exception e) {
             return null;
         }

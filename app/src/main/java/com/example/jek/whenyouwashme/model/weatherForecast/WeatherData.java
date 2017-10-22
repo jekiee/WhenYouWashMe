@@ -2,7 +2,7 @@ package com.example.jek.whenyouwashme.model.weatherForecast;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * Created by jek on 29.08.2017.
@@ -10,27 +10,25 @@ import java.util.List;
 
 public class WeatherData {
 
-    @SerializedName("temp")
-    public int temp;
+    public String cod;
 
-    @SerializedName("temp_main")
-    public int tempMain;
-
-
-    public int temp_max;
-    public int pressure;
-
-    @SerializedName("clouds")
-    public String clouds; //weather/main:
-
-    @SerializedName("speed")
-    public String windSpeed;
-
-    @SerializedName("deg")
-    public String windDirection;
-
-    public List<Tag> tags;
-
-    public WeatherData() {
+    public class Weather {
+        public double pressure;
+        public double temp;
     }
+
+    public class WeatherInfo {
+        @SerializedName("dt")
+        public long date;
+
+        @SerializedName("main")
+        public Weather weather;
+
+        public Date getDate() {
+            return new Date(date * 1000);
+        }
+    }
+
+    @SerializedName("list")
+    public WeatherInfo[] info;
 }

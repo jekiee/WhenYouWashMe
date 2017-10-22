@@ -14,6 +14,7 @@ import com.example.jek.whenyouwashme.fragments.FragmentLowerPart;
 import com.example.jek.whenyouwashme.fragments.FragmentRightPart;
 import com.example.jek.whenyouwashme.fragments.FragmentWeather;
 import com.example.jek.whenyouwashme.model.weatherForecast.RemoteFetch;
+import com.example.jek.whenyouwashme.model.weatherForecast.WeatherData;
 import com.example.jek.whenyouwashme.services.LocationService;
 
 import org.json.JSONObject;
@@ -112,8 +113,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
         }
     };
 
-    public JSONObject fetchWeather(){
-        return remoteFetch.getJSON(this);
+    public WeatherData fetchWeather(){
+        return remoteFetch.getWeather(this);
     }
 
 }

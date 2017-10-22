@@ -21,12 +21,10 @@ import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
 import com.example.jek.whenyouwashme.activity.WeatherForecastActivity;
+import com.example.jek.whenyouwashme.model.weatherForecast.WeatherData;
 import com.example.jek.whenyouwashme.services.LocationService;
 
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -145,26 +143,15 @@ public class FragmentWeather extends Fragment {
         }
     };
 
-    private void renderWeather(JSONObject json) {
+    private void renderWeather(WeatherData data) {
         try {
-            JSONObject wind = json.getJSONArray("list").getJSONObject(0).getJSONObject("wind");
-            JSONObject weatherToday = json.getJSONArray("list").getJSONObject(0).getJSONArray("weather").getJSONObject(0);
-            JSONObject weatherActual = json.getJSONArray("list").getJSONObject(0).getJSONObject("main");
-            String temperatureActualString = weatherActual.getString("temp");
-//            String pressureActual = weatherActual.getString("pressure");
-            //long temperature = Math.round(Double.parseDouble(temperatureActualString));
-            long temperature = Math.round(Double.parseDouble(temperatureActualString));
+            double dtemperature = data.info[0].weather.temp;
+            long temperature = Math.round(dtemperature);
             if (temperature > 0) {
                 temperatureToday.setText("+" + temperature + fromHtml("&#176")/* + R.string.temperature_in_gradus*/ + "C");
             } else {
                 temperatureToday.setText(String.valueOf(temperature) + fromHtml("&#176") + "C");
             }
-            //int temperature = Integer.valueOf(temperatureActualString);
-            Log.d(TAG, "\u00B0");
-            Log.d(TAG, weatherToday.getString("main"));
-            Log.d(TAG, String.valueOf(wind));
-            Log.d(TAG, String.valueOf(weatherToday));
-            Log.d(TAG, String.valueOf(json));
         } catch (Exception e) {
             Log.e(TAG, "One of the fields not found in the JSON data");
         }
@@ -185,8 +172,8 @@ public class FragmentWeather extends Fragment {
         new Thread() {
             public void run() {
                 WeatherForecastActivity weatherForecastActivity = (WeatherForecastActivity) getActivity();
-                final JSONObject json = weatherForecastActivity.fetchWeather();
-                if (json == null) {
+                final WeatherData data = weatherForecastActivity.fetchWeather();
+                if (data == null) {
                     handler.post(new Runnable() {
                         public void run() {
                             Toast.makeText(getActivity(),
@@ -197,7 +184,7 @@ public class FragmentWeather extends Fragment {
                 } else {
                     handler.post(new Runnable() {
                         public void run() {
-                            renderWeather(json);
+                            renderWeather(data);
                         }
                     });
                 }
