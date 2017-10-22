@@ -1,10 +1,7 @@
 package com.example.jek.whenyouwashme.activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -19,6 +16,8 @@ import com.example.jek.whenyouwashme.fragments.FragmentWeather;
 import com.example.jek.whenyouwashme.model.weatherForecast.RemoteFetch;
 import com.example.jek.whenyouwashme.services.LocationService;
 
+import org.json.JSONObject;
+
 // активити отрисовывающее погоду
 
 public class WeatherForecastActivity extends AppCompatActivity {
@@ -29,7 +28,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG, "onCreate: ");
 //        Log.d(TAG, "onCreate: ");
 //        FragmentManager fragmentManager = getFragmentManager();
 //        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -61,7 +60,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
                 setContentView(R.layout.activity_main_landscape);
                 getFragmentManager().beginTransaction().replace(R.id.weather_part, FragmentWeather.newInstance()).commit();
                 getFragmentManager().beginTransaction().replace(R.id.right_part, FragmentRightPart.newInstance()).commit();
-            }else {
+            } else {
                 Log.d(TAG, "savedInstanceState != null, landscape orient");
                 setContentView(R.layout.activity_main_landscape);
                 getFragmentManager().beginTransaction().replace(R.id.right_part, FragmentRightPart.newInstance()).commit();
@@ -74,36 +73,6 @@ public class WeatherForecastActivity extends AppCompatActivity {
 
         remoteFetch = new RemoteFetch();
 
-//        Gson gson = new Gson();
-//        TestObj obj = new TestObj();
-//        obj.setId(12);
-//        obj.setText("text");
-//
-//        String json = gson.toJson(obj);
-//        Log.d(TAG, "json : " + json);
-//
-//        TestObj newObj = gson.fromJson(json, TestObj.class);
-    }
-
-    public static class TestObj {
-        public long id;
-        public String text;
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
     }
 
     //в методе биндимся к сервису LocationService
@@ -111,11 +80,6 @@ public class WeatherForecastActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, LocationService.class);
-        bindService(intent, connection, BIND_AUTO_CREATE);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(LocationService.ACTION_LOCATION);
-        registerReceiver(remoteFetch, intentFilter);
     }
 
     @Override
@@ -128,10 +92,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unbindService(connection);
-        unregisterReceiver(remoteFetch);
     }
 
-    //а хз что тут происходит, вроде как 
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override
@@ -148,9 +110,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
         }
     };
 
-    private void bindWeatherForecastService() {
-        bindService(new Intent(this, LocationService.class), connection, BIND_AUTO_CREATE);
+    public JSONObject fetchWeather(){
+        return remoteFetch.getJSON(this);
     }
-
 
 }

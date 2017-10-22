@@ -1,6 +1,11 @@
 package com.example.jek.whenyouwashme.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -15,7 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jek.whenyouwashme.R;
-import com.example.jek.whenyouwashme.model.weatherForecast.RemoteFetch;
+import com.example.jek.whenyouwashme.activity.WeatherForecastActivity;
+import com.example.jek.whenyouwashme.services.LocationService;
 
 import org.json.JSONObject;
 
@@ -24,36 +30,29 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by jek on 10.08.2017.
- */
-
 public class FragmentWeather extends Fragment {
     private final static String TAG = FragmentWeather.class.getSimpleName();
 
     TextView dateToday;
     TextView windPressure;
     ImageView weatherTodayBigPicture;
-    TextView tempertureToday;
+    TextView temperatureToday;
 
     ImageView weatherFirstDayPicture;
-    TextView tempertureFirstDay;
+    TextView temperatureFirstDay;
     TextView dateFirstDay;
 
     TextView dateSecondDay;
     ImageView weatherSecondDayPicture;
-    TextView tempertureSecondDay;
+    TextView temperatureSecondDay;
 
     TextView dateThirdDay;
-    ImageView weatherThisrdDayPicture;
-    TextView tempertureThirdDay;
+    ImageView weatherThirdDayPicture;
+    TextView temperatureThirdDay;
 
     TextView dateFourthDay;
     ImageView weatherFourthDayPicture;
-    TextView tempertureFourthDay;
-
-    Calendar calendar;
-    Date date;
+    TextView temperatureFourthDay;
 
     Handler handler;
 
@@ -77,31 +76,30 @@ public class FragmentWeather extends Fragment {
         dateToday = (TextView) rootView.findViewById(R.id.dateToday);
         windPressure = (TextView) rootView.findViewById(R.id.wind_pressure_today);
         weatherTodayBigPicture = (ImageView) rootView.findViewById(R.id.bigPicture_weather_today);
-        tempertureToday = (TextView) rootView.findViewById(R.id.temperature_today);
+        temperatureToday = (TextView) rootView.findViewById(R.id.temperature_today);
 
         View firstDay = rootView.findViewById(R.id.widget1);
         dateFirstDay = (TextView) firstDay.findViewById(R.id.date);
         weatherFirstDayPicture = (ImageView) firstDay.findViewById(R.id.weatherImg);
-        tempertureFirstDay = (TextView) firstDay.findViewById(R.id.temperature);
+        temperatureFirstDay = (TextView) firstDay.findViewById(R.id.temperature);
 
         View secondDay = rootView.findViewById(R.id.widget2);
         dateSecondDay = (TextView) secondDay.findViewById(R.id.date);
         weatherSecondDayPicture = (ImageView) secondDay.findViewById(R.id.weatherImg);
-        tempertureSecondDay = (TextView) secondDay.findViewById(R.id.temperature);
+        temperatureSecondDay = (TextView) secondDay.findViewById(R.id.temperature);
 
         View thirdDay = rootView.findViewById(R.id.widget3);
         dateThirdDay = (TextView) thirdDay.findViewById(R.id.date);
-        weatherThisrdDayPicture = (ImageView) thirdDay.findViewById(R.id.weatherImg);
-        tempertureThirdDay = (TextView) thirdDay.findViewById(R.id.temperature);
+        weatherThirdDayPicture = (ImageView) thirdDay.findViewById(R.id.weatherImg);
+        temperatureThirdDay = (TextView) thirdDay.findViewById(R.id.temperature);
 
         View fourthDay = rootView.findViewById(R.id.widget4);
         dateFourthDay = (TextView) fourthDay.findViewById(R.id.date);
         weatherFourthDayPicture = (ImageView) fourthDay.findViewById(R.id.weatherImg);
-        tempertureFourthDay = (TextView) fourthDay.findViewById(R.id.temperature);
+        temperatureFourthDay = (TextView) fourthDay.findViewById(R.id.temperature);
 
         return rootView;
     }
-
 
 
     @Override
@@ -118,7 +116,6 @@ public class FragmentWeather extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateWeatherData();
     }
 
     @Override
@@ -126,6 +123,10 @@ public class FragmentWeather extends Fragment {
         super.onStart();
         Log.d(TAG, "onStart: " + handler.getClass().toString());
         handler.post(runnable);
+        Activity activity = getActivity();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(LocationService.ACTION_LOCATION);
+        activity.registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -133,7 +134,16 @@ public class FragmentWeather extends Fragment {
         super.onStop();
         Log.d(TAG, "onStop: " + handler.getClass().toString());
         handler.removeCallbacks(runnable);
+        getActivity().unregisterReceiver(receiver);
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FragmentWeather.this.updateWeatherData();
+        }
+    };
 
     private void renderWeather(JSONObject json) {
         try {
@@ -141,13 +151,13 @@ public class FragmentWeather extends Fragment {
             JSONObject weatherToday = json.getJSONArray("list").getJSONObject(0).getJSONArray("weather").getJSONObject(0);
             JSONObject weatherActual = json.getJSONArray("list").getJSONObject(0).getJSONObject("main");
             String temperatureActualString = weatherActual.getString("temp");
-            String pressureActual = weatherActual.getString("pressure");
+//            String pressureActual = weatherActual.getString("pressure");
             //long temperature = Math.round(Double.parseDouble(temperatureActualString));
             long temperature = Math.round(Double.parseDouble(temperatureActualString));
             if (temperature > 0) {
-                tempertureToday.setText("+" + temperature + fromHtml("&#176")/* + R.string.temperature_in_gradus*/ + "C");
+                temperatureToday.setText("+" + temperature + fromHtml("&#176")/* + R.string.temperature_in_gradus*/ + "C");
             } else {
-                tempertureToday.setText(String.valueOf(temperature) + fromHtml("&#176") + "C");
+                temperatureToday.setText(String.valueOf(temperature) + fromHtml("&#176") + "C");
             }
             //int temperature = Integer.valueOf(temperatureActualString);
             Log.d(TAG, "\u00B0");
@@ -174,7 +184,8 @@ public class FragmentWeather extends Fragment {
     private void updateWeatherData() {
         new Thread() {
             public void run() {
-                final JSONObject json = RemoteFetch.getJSON(getActivity());
+                WeatherForecastActivity weatherForecastActivity = (WeatherForecastActivity) getActivity();
+                final JSONObject json = weatherForecastActivity.fetchWeather();
                 if (json == null) {
                     handler.post(new Runnable() {
                         public void run() {
@@ -195,7 +206,8 @@ public class FragmentWeather extends Fragment {
     }
 
     public static FragmentWeather newInstance() {
-        FragmentWeather fragmentWeather = new FragmentWeather();
-        return fragmentWeather;
+        return new FragmentWeather();
     }
+
+
 }
