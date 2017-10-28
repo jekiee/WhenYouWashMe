@@ -17,9 +17,15 @@ public class WeatherData {
         public double temp;
     }
 
+    @SerializedName("list")
+    public WeatherInfo[] info;
+
     public class WeatherInfo {
         @SerializedName("dt")
         public long date;
+
+        @SerializedName("weather")
+        public WeatherStats[] stats;
 
         @SerializedName("main")
         public Weather weather;
@@ -29,6 +35,8 @@ public class WeatherData {
         }
     }
 
-    @SerializedName("list")
-    public WeatherInfo[] info;
+    public class WeatherStats{
+        @SerializedName("main")
+        public String weatherType;
+    }
 }

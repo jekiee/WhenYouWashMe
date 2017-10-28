@@ -149,21 +149,78 @@ public class FragmentWeather extends Fragment {
         try {
             Forecast[] days = new Forecast[5];
             Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR_OF_DAY, 12);
             for (int i = 0; i < days.length; i++) {
                 days[i] = new Forecast(calendar.getTime());
                 calendar.add(Calendar.DATE, 1);
+                if (i == 0) {
+                    days[i].setWeatherInfo(data.info[0]);
+                    continue;
+                }
+                for (WeatherData.WeatherInfo info : data.info) {
+                    if (info.getDate().compareTo(days[i].getDate()) == 0) {
+                        days[i].setWeatherInfo(info);
+                    }
+                }
             }
-            double dtemperature = data.info[0].weather.temp;
-            long temperature = Math.round(dtemperature);
-            if (temperature > 0) {
-                temperatureToday.setText("+" + temperature + fromHtml("&#176")/* + R.string.temperature_in_gradus*/ + "C");
-            } else {
-                temperatureToday.setText(String.valueOf(temperature) + fromHtml("&#176") + "C");
+
+            ImageView[] weatherPicture =
+                    new ImageView[]{weatherTodayBigPicture,
+                            weatherFirstDayPicture,
+                            weatherSecondDayPicture,
+                            weatherThirdDayPicture,
+                            weatherFourthDayPicture};
+
+            TextView[] temperatureOnDay =
+                    new TextView[]{temperatureToday,
+                            temperatureFirstDay,
+                            temperatureSecondDay,
+                            temperatureThirdDay,
+                            temperatureFourthDay};
+
+            TextView[] dateOfDay =
+                    new TextView[]{dateFirstDay,
+                            dateSecondDay,
+                            dateThirdDay,
+                            dateFourthDay};
+
+            for (int i = 0; i < days.length; i++) {
+                switch (days[i].getWeatherType()) {
+                    case "Thunderstorm" : weatherPicture[i].setImageResource(R.drawable.ic_storm);
+                    break;
+                    case "Drizzle" : weatherPicture[i].setImageResource(R.drawable.ic_rain);
+                    break;
+                    case "Rain" : weatherPicture[i].setImageResource(R.drawable.ic_rain_2);
+                    break;
+                    case "Snow" : weatherPicture[i].setImageResource(R.drawable.ic_snowing_3);
+                    break;
+                    case "Clear" : weatherPicture[i].setImageResource(R.drawable.ic_sun);
+                    break;
+                    case "Clouds" : weatherPicture[i].setImageResource(R.drawable.ic_cloud);
+                    break;
+                }
+            }
+
+            for (int i = 0; i < dateOfDay.length; i++) {
+                dateOfDay[i].setText(new SimpleDateFormat("EE,\ndd.MM", Locale.getDefault()).format(days[i].getDate()));
+            }
+
+            for (int i = 0; i < days.length; i++) {
+                long temperature = days[i].getTemperature();
+                if (temperature > 0) {
+                    temperatureOnDay[i].setText("+" + temperature + fromHtml("&#176")/* + R.string.temperature_in_gradus*/ + "C");
+                } else {
+                    temperatureOnDay[i].setText(String.valueOf(temperature) + fromHtml("&#176") + "C");
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "One of the fields not found in the JSON data");
         }
     }
+
 
     @SuppressWarnings("deprecation")
     public static Spanned fromHtml(String html) {

@@ -4,27 +4,25 @@ import java.util.Date;
 
 public class Forecast {
     private Date date;
-    private double temperature;
-    private int count;
+    private WeatherData.WeatherInfo weatherInfo;
 
     public Forecast(Date date) {
         this.date = date;
     }
 
-    public void addTemperature(double temperature) {
-        this.temperature += temperature;
-        ++count;
-    }
-
-    public void normalize() {
-        this.temperature /= count;
+    public void setWeatherInfo(WeatherData.WeatherInfo weatherInfo) {
+        this.weatherInfo = weatherInfo;
     }
 
     public Date getDate() {
         return this.date;
     }
 
-    public double getTemperature() {
-        return this.temperature;
+    public long getTemperature() {
+        return Math.round(this.weatherInfo.weather.temp);
+    }
+
+    public String getWeatherType(){
+        return this.weatherInfo.stats[0].weatherType;
     }
 }
