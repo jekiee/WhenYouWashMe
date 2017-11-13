@@ -3,9 +3,11 @@ package com.example.jek.whenyouwashme.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -76,11 +78,13 @@ public class WeatherForecastActivity extends AppCompatActivity {
 
     }
 
+    
     //в методе биндимся к сервису LocationService
     //и регистрируем наш ресивер на получение данных от сервиса
     @Override
     protected void onStart() {
         super.onStart();
+        checkPermissions();
         Intent intent = new Intent(this, LocationService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
@@ -117,4 +121,19 @@ public class WeatherForecastActivity extends AppCompatActivity {
         return remoteFetch.getWeather(this);
     }
 
+    public void checkPermissions() {
+        int fineLocation = ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        int courseLocation = ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (fineLocation != PackageManager.PERMISSION_GRANTED
+                && courseLocation != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                            new String[]{
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    1);
+        }
+    }
 }
