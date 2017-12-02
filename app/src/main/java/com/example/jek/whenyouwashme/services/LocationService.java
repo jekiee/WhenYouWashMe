@@ -91,11 +91,11 @@ public class LocationService extends Service implements
             return;
         }
         currentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (currentLocation != null) {
-            Log.d(TAG, "initial location: " + currentLocation.getLatitude() + " " + currentLocation.getLongitude());
-            Intent intent = new Intent(ACTION_LOCATION);
-            sendBroadcast(intent);
-        }
+//        if (currentLocation != null) {
+//            Log.d(TAG, "initial location: " + currentLocation.getLatitude() + " " + currentLocation.getLongitude());
+//            Intent intent = new Intent(ACTION_LOCATION);
+//            sendBroadcast(intent);
+//        }
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(2 * 60 * 1000);
         locationRequest.setFastestInterval(60 * 1000);
@@ -145,7 +145,7 @@ public class LocationService extends Service implements
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if(cal.getTimeInMillis() > alarmTime){
+            if (cal.getTimeInMillis() > alarmTime) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     editor.putLong(ALARM_TIME, (cal.getTimeInMillis() + FUTURE_TIME));//current time + 6 hours in millis
@@ -154,13 +154,13 @@ public class LocationService extends Service implements
 
                 AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
                 Intent serviceIntent = new Intent(ctx, LocationService.class);
-    // make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
+                // make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
                 PendingIntent servicePendingIntent =
                         PendingIntent.getService(ctx,
                                 LocationService.WEATHER_FORECAST_SERVICE_ID, // integer constant used to identify the service
                                 serviceIntent,
                                 PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
-    // there are other options like setInexactRepeating, check the docs
+                // there are other options like setInexactRepeating, check the docs
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     am.setRepeating(
                             AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
@@ -176,6 +176,8 @@ public class LocationService extends Service implements
 
     @Override
     public void onLocationChanged(Location location) {
+        //TODO MAKE DISTANCE DEPENDENT!!!!
+
         this.currentLocation = location;
         if (currentLocation != null) {
             Log.d(TAG, location.getLatitude() + " " + location.getLongitude());

@@ -9,8 +9,6 @@ import com.example.jek.whenyouwashme.services.LocationService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -19,9 +17,21 @@ import java.text.DecimalFormat;
 
 public class RemoteFetch {
     private static final String TAG = RemoteFetch.class.getSimpleName();
+    private static int counter;
+    private WeatherData weatherData;
 
     public WeatherData getWeather(Context context) {
+        while (weatherData == null && counter < 3) {
+            fetchWeather(context);
+            //TODO Pause
+        }
+        if (weatherData == null) {
+            //TODO Critical error
+        }
+        return weatherData;
+    }
 
+    private void fetchWeather(Context context) {
         try {
             URL url = new URL(initLocation(context));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -38,13 +48,13 @@ public class RemoteFetch {
             Gson gson = builder.create();
             WeatherData wth = gson.fromJson(json.toString(), WeatherData.class);
             if (!wth.cod.equals("200")) {
-                return null;
+                Log.d(TAG, "Return code !200");
             }
 
             Log.d(TAG, "JSON: " + json);
-            return wth;
+            weatherData = wth;
         } catch (Exception e) {
-            return null;
+            Log.d(TAG, "getWeather exception : " + e.getMessage());
         }
     }
 
