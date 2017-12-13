@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
 
 public class RemoteFetch {
     private static final String TAG = RemoteFetch.class.getSimpleName();
@@ -24,10 +25,19 @@ public class RemoteFetch {
         while (weatherData == null && counter < 3) {
             fetchWeather(context);
             //TODO Pause
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            counter++;
+            Log.d(TAG, "counter: " + String.valueOf(counter));
         }
         if (weatherData == null) {
             //TODO Critical error
+            counter = 0;
         }
+        counter = 0;
         return weatherData;
     }
 

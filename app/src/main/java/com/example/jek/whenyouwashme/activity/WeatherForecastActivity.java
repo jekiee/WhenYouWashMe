@@ -42,11 +42,14 @@ public class WeatherForecastActivity extends AppCompatActivity {
 //          первым if'ом определяем ориентацию экрана - портретный/ландшафтный
 //          второй if перерисовывает фрагменты активити, удаляя старые, иначе они накладываются друг на друга
 //          после каждого поворота экрана
+
         if (getResources().getConfiguration().orientation ==
                 Configuration.ORIENTATION_PORTRAIT) {
             if (savedInstanceState == null) {
                 setContentView(R.layout.activity_main_portrait);
                 Log.d(TAG, "savedInstanceState == null, portrait orient");
+//                getFragmentManager().beginTransaction().replace(R.id.weather_part, new FragmentWeather()).commit();
+//                getFragmentManager().beginTransaction().replace(R.id.lower_part, new FragmentLowerPart()).commit();
                 getFragmentManager().beginTransaction().replace(R.id.weather_part, FragmentWeather.newInstance()).commit();
                 getFragmentManager().beginTransaction().replace(R.id.lower_part, FragmentLowerPart.newInstance()).commit();
             } else {
@@ -61,6 +64,8 @@ public class WeatherForecastActivity extends AppCompatActivity {
             if (savedInstanceState == null) {
                 Log.d(TAG, "savedInstanceState == null, landscape orient");
                 setContentView(R.layout.activity_main_landscape);
+//                getFragmentManager().beginTransaction().replace(R.id.weather_part, new FragmentWeather()).commit();
+//                getFragmentManager().beginTransaction().replace(R.id.right_part, new FragmentRightPart()).commit();
                 getFragmentManager().beginTransaction().replace(R.id.weather_part, FragmentWeather.newInstance()).commit();
                 getFragmentManager().beginTransaction().replace(R.id.right_part, FragmentRightPart.newInstance()).commit();
             } else {

@@ -54,6 +54,8 @@ public class FragmentWeather extends Fragment {
     ImageView weatherFourthDayPicture;
     TextView temperatureFourthDay;
 
+
+
     Handler handler;
 
     Runnable runnable = new Runnable() {
@@ -111,6 +113,9 @@ public class FragmentWeather extends Fragment {
         Runnable runnable = new SetCurrentTime();
         timerThread = new Thread(runnable);
         timerThread.start();*/
+
+        if (savedInstanceState != null) {
+        }
     }
 
     @Override
@@ -256,6 +261,8 @@ public class FragmentWeather extends Fragment {
             }
         }.start();
     }
+
+
 
     public static FragmentWeather newInstance() {
         return new FragmentWeather();
